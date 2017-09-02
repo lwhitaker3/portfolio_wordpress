@@ -1,0 +1,34 @@
+{
+  "name": "sage",
+  "homepage": "https://roots.io/sage/",
+  "authors": [
+    "Ben Word <ben@benword.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "git://github.com/twbs/bootstrap.git#v4.0.0-beta",
+    "popper.js": "^1.12.3",
+    "mixitup": "^3.2.1",
+    "waypoints": "^4.0.1",
+    "typeit": "^4.4.0",
+    "scrollmagic": "^2.0.5",
+    "slick-carousel": "^1.7.1",
+    "headroom.js": "https://unpkg.com/headroom.js/bower.zip"
+  },
+  "overrides": {
+    "waypoints": {
+      "main": [
+        "./lib/jquery.waypoints.js",
+        "./lib/shortcuts/sticky.js",
+        "./lib/shortcuts/inview.js"
+      ]
+    },
+    "headroom.js": {
+      "main": [
+        "./dist/headroom.min.js",
+        "./dist/jQuery.headroom.min.js"
+      ]
+    }
+  }
+}

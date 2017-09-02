@@ -1,0 +1,160 @@
+footer{
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  background-color: white;
+  padding-top: 100px;
+  .arrow-up-wrapper{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    .icon-up{
+      font-size: 36px;
+      display: inline-block;
+    }
+    &:hover .icon-up{
+      -webkit-animation: arrow-bounce 2s infinite;
+      animation: arrow-bounce 2s infinite;
+    }
+  }
+  #logo-wrapper2{
+    height: 50px;
+    margin: 20px 0;
+    #logo-name{
+      height:50px;
+    }
+    svg{
+      path{
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+
+    }
+  }
+}
+// END FOOTER STYLES
+
+// INDEX
+.jumbotron-wrapper {
+  height: 100vh;
+  min-height: 500px;
+  position: relative;
+  .intro-scroll-wrapper{
+    position: absolute;
+    left:50%;
+    bottom: 10px;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    .intro-scroll{
+      display: inline-block;
+      color: white;
+      font-size: 40px;
+    }
+    &:hover{
+      .intro-scroll{
+        -webkit-animation: arrow-bounce 2s infinite;
+        animation: arrow-bounce 2s infinite;
+      }
+    }
+  }
+  .jumbotron{
+    background-color: #e72264;
+    background-image: linear-gradient(135deg, $primary-color 30%, $secondary-color 70%);
+    position: fixed;
+    /* do not overlap the header */
+    bottom: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+    text-align: center;
+    border: 10px solid white;
+    margin-bottom: 0;
+    .jumbotron-content-wrapper{
+      position: absolute;
+      left:50%;
+      top:50%;
+      -webkit-transform: translate(-50%,-50%);
+      transform: translate(-50%,-50%);
+    }
+    p{
+      color: white;
+      font-size: 24px;
+      margin-top: 20px
+    }
+    #intro-image{
+      width: 100px;
+      margin-bottom: 50px;
+    }
+    #svgWrapper{
+      width: 80%;
+      height: auto;
+      margin: auto;
+      svg{
+        #stroke{
+          stroke-linecap: round;
+          shape-rendering: geometricPrecision;
+          .louise{
+            stroke-dasharray: 2200;
+            stroke-dashoffset: 2200;
+            stroke-width: 8;
+            -webkit-animation: name-louise 1.5s linear forwards .5s;
+                    animation: name-louise 1.5s linear forwards .5s;
+          }
+          .r {
+            stroke-dasharray: 800;
+            stroke-dashoffset: 800;
+            stroke-width: 8;
+            -webkit-animation: name-r .5s linear forwards 2.25s;
+                    animation: name-r .5s linear forwards 2.25s;
+          }
+          .w {
+            stroke-dasharray: 800;
+            stroke-dashoffset: 800;
+            stroke-width: 8;
+            -webkit-animation: name-w .5s linear forwards 3s;
+                    animation: name-w .5s linear forwards 3s;
+          }
+          .hitaker {
+            stroke-dasharray: 2400;
+            stroke-dashoffset: 2400;
+            stroke-width: 8;
+            -webkit-animation: name-hitaker 1.5s linear forwards 3.75s;
+                    animation: name-hitaker 1.5s linear forwards 3.75s;
+          }
+          .t-cross {
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+            stroke-width: 8;
+            -webkit-animation: name-t-cross .5s linear forwards 5.5s;
+                    animation: name-t-cross .5s linear forwards 5.5s;
+          }
+        }
+        .name-hearts{
+          path{
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            stroke-width: 7;
+            stroke-linecap: round;
+          }
+          .heart1-2{
+            -webkit-animation: name-hearts .25s linear forwards 6.25s;
+                    animation: name-hearts .25s linear forwards 6.25s;
+          }
+          .heart1-1{
+            -webkit-animation: name-hearts .25s linear forwards 6.75s;
+                    animation: name-hearts .25s linear forwards 6.75s;
+          }
+          .heart2-2{
+            -webkit-animation: name-hearts .25s linear forwards 7.25s;
+                    animation: name-hearts .25s linear forwards 7.25s;
+          }
+          .heart2-1{
+            -webkit-animation: name-hearts .25s linear forwards 7.75s;
+                    animation: name-hearts .25s linear forwards 7.75s;
+          }
+        }
+      }
+    }
+  }
+}
