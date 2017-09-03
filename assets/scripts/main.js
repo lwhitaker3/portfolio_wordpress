@@ -18,60 +18,274 @@
     // All pages
     'common': {
       init: function() {
-        var containerEl = document.querySelector('.portfolio-cards');
-        var mixer = mixitup(containerEl, {
-          load: {
-              filter: '.featured'
+        // Begin hero scroll button.
+        var resizeFunction = null;
+        var controller = null;
+        
+        function makeController() {
+          // If it's not visible, don't create a scene.
+          if ($('#trigger1').length == 0) {
+            return null;
           }
-        });
-        $(' #portfolio-cards > .mix > .content-wrapper ').each( function() { $(this).hoverdir(); } );
-        var introSection = $('#jumbotron-content'),
-        introSectionHeight = introSection.height(),
-        //change scaleSpeed if you want to change the speed of the scale effect
-        scaleSpeed = 0.3,
-        //change opacitySpeed if you want to change the speed of opacity reduction effect
-        opacitySpeed = 1;
+          var controller = new ScrollMagic.Controller();
 
-        //update this value if you change this breakpoint in the style.css file (or _layout.scss if you use SASS)
-        var MQ = 767;
+          new ScrollMagic.Scene({triggerElement: "#trigger1", duration: 300})
+                  .setPin("#pin1")
+                  .triggerHook('0')
+                  // .addIndicators({name: "1 (duration: 300)"}) // add indicators (requires plugin)
+                  .addTo(controller);
 
-        triggerAnimation();
-        $(window).on('resize', function(){
-          triggerAnimation();
-          // updateNavBar();
-        });
+          new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
+                  .setClassToggle(".project-intro-image", "scrolled")
+                  .triggerHook('0') // add class toggle
+                  // .addIndicators() // add indicators (requires plugin)
+                  .addTo(controller);
+          new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
+                  .setClassToggle(".project-intro-text p", "scrolled")
+                  .triggerHook('0') // add class toggle
+                  // .addIndicators() // add indicators (requires plugin)
+                  .addTo(controller);
+          new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
+                  .setClassToggle(".project-intro-text h1", "scrolled")
+                  .triggerHook('0') // add class toggle
+                  // .addIndicators() // add indicators (requires plugin)
+                  .addTo(controller);
+          new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
+                  .setClassToggle(".project-intro-text .section-divider", "scrolled")
+                  .triggerHook('0') // add class toggle
+                  // .addIndicators() // add indicators (requires plugin)
+                  .addTo(controller);
+          new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
+                  .setClassToggle(".icon-down-wrapper", "scrolled")
+                  .triggerHook('0') // add class toggle
+                  // .addIndicators() // add indicators (requires plugin)
+                  .addTo(controller);
 
-        //bind the scale event to window scroll if window width > $MQ (unbind it otherwise)
-        function triggerAnimation(){
-          if($(window).width()>= MQ) {
-            $(window).on('scroll', function(){
-              //The window.requestAnimationFrame() method tells the browser that you wish to perform an animation- the browser can optimize it so animations will be smoother
-              window.requestAnimationFrame(animateIntro);
-            });
+          return controller;
+        }
+        
+        function getInitialCardPosition(wrapper$, content$) {
+          var gridItem$ = wrapper$.parent();
+          var offset = gridItem$.position();
+
+          // Clear the transform so the size calculation is correct.
+          content$.css({
+            transition: 'none',
+            transform: 'none'
+          });
+          /* Set the initial state to make it overlap the current item. */
+          var initialPosition = {
+            /* Offsets from the relative parent to match it to the clicked image. */
+            top: (offset.top || 0) + parseInt(gridItem$.css('padding-top'), 10),
+            left: (offset.left || 0) + parseInt(gridItem$.css('padding-left'), 10),
+            height: content$.css('height'),
+            width: content$.css('width')
+          };
+          // Reset the styles.
+          content$.css({
+            transition: '',
+            transform: ''
+          });
+
+          return initialPosition;
+        }
+        
+        function closePage() {
+          resizeFunction = null;
+          $('#project-page-content-wrapper').removeClass('visible');
+          if (controller) {
+            controller.destroy(true);
+            controller = null;
+          }
+          $('#project-page-content').empty();
+          var wrapper$ = $('.page-card-grid .page-card-target.active');
+
+          var content$ = wrapper$.find('.page-card-content').addBack('.page-card-content');
+          var placeholder$ = $('.page-card-grid .placeholder');
+
+          // No placeholder, nothing to close.
+          if (!placeholder$.length) {
+            return;
+          }
+
+          setTimeout(function() {
+            placeholder$.css(getInitialCardPosition(wrapper$, content$));
+
+            $(document.body).removeClass('noscroll');
+            placeholder$.removeClass('page-animate-in');
+
+            function destroyPlaceholderFn(e) {
+              if (e.target == e.currentTarget && e.originalEvent.propertyName == 'transform') {
+                var grid$ = wrapper$.parents('.page-card-grid');
+                placeholder$.off('transitionend', destroyPlaceholderFn);
+                grid$.removeClass('active');
+                wrapper$.removeClass('active');
+                window.setTimeout(function() {
+                  placeholder$.remove();
+                }, 0);
+              }
+            }
+
+            placeholder$.on('transitionend', destroyPlaceholderFn);
+          }, 20);
+        }
+        
+        function updateIntroImageRatio() {
+          var windowWidth = $( window ).width();
+          var windowHeight = $( window ).height();
+          var windowRatio = windowWidth/windowHeight;
+          $('.project-intro').css('width', windowWidth);
+          $('.scrollmagic-pin-spacer').css('width', windowWidth);
+          $('.project-intro-image').css('width', windowWidth);
+          $('.project-intro-image').css('height', windowHeight);
+
+          $('.project-intro-text').css('width', windowWidth/2);
+          $('.project-intro-text').css('height', windowHeight/2);
+
+          var imageHeight = $('.project-intro-image img').height();
+          var imageWidth = $('.project-intro-image img').width();
+          var imageRatio = imageWidth/imageHeight;
+
+          if (windowRatio <= imageRatio){
+            $('.project-intro-image img').css('height','100%');
+            $('.project-intro-image img').css('width','auto');
           } else {
-            $(window).off('scroll');
+            $('.project-intro-image img').css('width','100%');
+            $('.project-intro-image img').css('height','auto');
           }
         }
-        //assign a scale transformation to the introSection element and reduce its opacity
-        function animateIntro () {
-          var scrollPercentage = ($(window).scrollTop()/introSectionHeight).toFixed(5),
-            scaleValue = 1 - scrollPercentage*scaleSpeed;
-          //check if the introSection is still visible
-          if( $(window).scrollTop() < introSectionHeight) {
-            introSection.css({
-                '-moz-transform': 'scale(' + scaleValue + ') translateZ(0)',
-                '-webkit-transform': 'scale(' + scaleValue + ') translateZ(0)',
-              '-ms-transform': 'scale(' + scaleValue + ') translateZ(0)',
-              '-o-transform': 'scale(' + scaleValue + ') translateZ(0)',
-              'transform': 'scale(' + scaleValue + ') translateZ(0)',
-              'opacity': 1 - scrollPercentage*opacitySpeed
-            });
-          }
+        
+        function update() {
+          $('.back-to-top').off('click').on('click', function (e) {
+              e.preventDefault();
+              $('html,body').animate({
+                  scrollTop: 0
+              }, 700);
+          });
+
+          $('.image-slider.mobile').slick({
+            infinite: true,
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            responsive: [
+              {
+                breakpoint: 767,
+                settings: {
+                  slidesToShow: 2,
+                  slidesToScroll: 1
+                }
+              },
+              {
+                breakpoint: 550,
+                settings: {
+                  slidesToShow: 1,
+                  slidesToScroll: 1
+                }
+              }
+              // You can unslick at a given breakpoint now by adding:
+              // settings: "unslick"
+              // instead of a settings object
+            ]
+          });
+
+          $('.image-slider.full').slick({
+            infinite: true,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          });
+          
+          $('#project-page-content-wrapper .close-icon').off('click').on('click', function() {
+            history.pushState({
+              path: "/"
+            }, "", "/");
+            closePage();
+          });
+          
+          // Trigger the setup.
+          $( window ).resize();
+          $('#project-page-content-wrapper .icon-down-wrapper').off('click').on('click', function (e) {
+              e.preventDefault();
+              $('#project-page-content-wrapper').animate({
+                  scrollTop: 100
+              }, 700);
+          });
         }
+        
+        function initMainPage() {
+          // Begin MixItUp filtering for projects.
+          var containerEl = document.querySelector('.portfolio-cards');
+          var mixer = mixitup(containerEl, {
+            load: {
+                filter: '.featured'
+            }
+          });
+          // End MixItUp filtering for projects.
+          // Add hoverdir to project cards.
+          $(' #portfolio-cards > .mix > .content-wrapper ').each( function() { $(this).hoverdir(); } );
+          
+          // Begin hero scroll button.
+          $('.intro-scroll-wrapper').on('click', function (e) {
+            e.preventDefault();
+            var scrollLength = $('.jumbotron-wrapper').height();
+            $('html,body').animate({
+                scrollTop: scrollLength
+            }, 700);
+          });
+          // End hero scroll button.
+          
+          // Begin intro fade animation.
+          var introSection = $('#jumbotron-content'),
+          introSectionHeight = introSection.height(),
+          //change scaleSpeed if you want to change the speed of the scale effect
+          scaleSpeed = 0.3,
+          //change opacitySpeed if you want to change the speed of opacity reduction effect
+          opacitySpeed = 1;
+          
+          //update this value if you change this breakpoint in the style.css file (or _layout.scss if you use SASS)
+          var MQ = 767;
+          
+          //bind the scale event to window scroll if window width > $MQ (unbind it otherwise)
+          function triggerAnimation(){
+            if($(window).width()>= MQ) {
+              $(window).on('scroll', function(){
+                //The window.requestAnimationFrame() method tells the browser that you wish to perform an animation- the browser can optimize it so animations will be smoother
+                window.requestAnimationFrame(animateIntro);
+              });
+            } else {
+              $(window).off('scroll');
+            }
+          }
+          //assign a scale transformation to the introSection element and reduce its opacity
+          function animateIntro () {
+            var scrollPercentage = ($(window).scrollTop()/introSectionHeight).toFixed(5),
+              scaleValue = 1 - scrollPercentage*scaleSpeed;
+            //check if the introSection is still visible
+            if( $(window).scrollTop() < introSectionHeight) {
+              introSection.css({
+                  '-moz-transform': 'scale(' + scaleValue + ') translateZ(0)',
+                  '-webkit-transform': 'scale(' + scaleValue + ') translateZ(0)',
+                '-ms-transform': 'scale(' + scaleValue + ') translateZ(0)',
+                '-o-transform': 'scale(' + scaleValue + ') translateZ(0)',
+                'transform': 'scale(' + scaleValue + ') translateZ(0)',
+                'opacity': 1 - scrollPercentage*opacitySpeed
+              });
+            }
+          }
+          // End intro fade animation.
 
-
-        $("#main-nav ul li a[href^='#']").on('click', function(e) {
-
+          // Start typing animation.
+          $('#typing-animation').typeIt({
+            strings: ["UX Designer.", "Problem Solver.", "Creative Thinker.", "Prototyping Queen.", "Seahawks Fan.", "Coffee Addict."],
+            speed: 150,
+            breakLines: false,
+            autoStart: false,
+            loop: true,
+            startDelay: 8500
+          });
+          // End typing animation.
+          
+          // Begin navbar links.
+          $("#main-nav ul li a[href^='#']").on('click', function(e) {
            // prevent default anchor click behavior
            e.preventDefault();
 
@@ -88,72 +302,54 @@
                window.location.hash = hash;
              });
 
-        });
-
-        $('.back-to-top').on('click', function (e) {
-            e.preventDefault();
-            $('html,body').animate({
-                scrollTop: 0
-            }, 700);
-        });
-
-        $('.intro-scroll-wrapper').on('click', function (e) {
-            e.preventDefault();
-        		var scrollLength = $('.jumbotron-wrapper').height();
-        		console.log(scrollLength);
-            $('html,body').animate({
-                scrollTop: scrollLength
-            }, 700);
-        });
-
-        $( ".navbar-toggler" ).click(function() {
-        	if ($(".navbar-collapse").hasClass("show")){
-        		$("#nav-icon").removeClass("open");
-        		$("#primary_navigation").removeClass("background");
-        		console.log("open");
-        	} else {
-        		$("#nav-icon").addClass("open");
-        		$("#primary_navigation").addClass("background");
-        		console.log("close");
-        	}
-        });
-
-        function updateNavBar() {
-          var headroom = nav.data('headroom');
-          headroom.offset = nav.offset().top + 40;
-          headroom.update();
-        }
-        window.nav = $("#main-nav");
-        nav.headroom({
-          // Offset set in updateNavBar.
-          "tolerance": 5,
-          "classes": {
-            "initial": "animated",
-            "pinned": "slideDown",
-            "unpinned": "slideUp"
-          }
-        });
-        navSticky = new Waypoint.Sticky({
-          element: nav[0],
-          stuckClass: 'fixed-top',
-        });
-        updateNavBar();
-
-        jQuery(document).ready(function($){
-          var resizeFunction = null;
-
-          $('.page-card-grid .page-card-target').on('click', function(e) {
-            var wrapper$ = $(e.currentTarget);
-            var pagePath = wrapper$.data('pagePath');
-            history.pushState({
-                path: pagePath
-              }, "", pagePath)
-            loadPage(wrapper$, pagePath);
           });
-
+          // End navbar links.
+          
+          // Begin navbar mobile menu toggle.
+          $( ".navbar-toggler" ).click(function() {
+            if ($(".navbar-collapse").hasClass("show")){
+              $("#nav-icon").removeClass("open");
+              $("#primary_navigation").removeClass("background");
+            } else {
+              $("#nav-icon").addClass("open");
+              $("#primary_navigation").addClass("background");
+            }
+          });
+          // End navbar mobile menu toggle.
+          
+          // Begin navbar sticky offset.
+          function updateNavBar() {
+            var headroom = nav.data('headroom');
+            headroom.offset = nav.offset().top + 40;
+            headroom.update();
+          }
+          var nav = $("#main-nav");
+          nav.headroom({
+            // Offset set in updateNavBar.
+            "tolerance": 5,
+            "classes": {
+              "initial": "animated",
+              "pinned": "slideDown",
+              "unpinned": "slideUp"
+            }
+          });
+          var navSticky = new Waypoint.Sticky({
+            element: nav[0],
+            stuckClass: 'fixed-top',
+          });
+          // End navbar sticky offset.
+          
+          // Begin page navigation handling.
           function loadPage(wrapper$, pagePath) {
             if (pagePath) {
-              $('#project-page-content').load(pagePath + ' #project-page-content');
+              if (controller) {
+                controller.destroy(true);
+                controller = null;
+              }
+              $('#project-page-content').empty()
+                  .load(pagePath + ' #project-page-content', function() {
+                    update();
+                  });
             }
             var content$ = wrapper$.find('.page-card-content').addBack('.page-card-content');
             var clone$ = content$.clone();
@@ -202,80 +398,14 @@
 
             placeholder$.on('transitionend', showPageContentFn);
           }
-
-          $('#project-page-content-wrapper .close').on('click', function() {
+          
+          $('.page-card-grid .page-card-target').on('click', function(e) {
+            var wrapper$ = $(e.currentTarget);
+            var pagePath = wrapper$.data('pagePath');
             history.pushState({
-              path: "/"
-            }, "", "/");
-            closePage();
-          });
-
-          function closePage() {
-            resizeFunction = null;
-            $('#project-page-content-wrapper').removeClass('visible');
-            $('#project-page-content').empty();
-            var wrapper$ = $('.page-card-grid .page-card-target.active');
-
-            var content$ = wrapper$.find('.page-card-content').addBack('.page-card-content');
-            var placeholder$ = $('.page-card-grid .placeholder');
-
-            // No placeholder, nothing to close.
-            if (!placeholder$.length) {
-              return;
-            }
-
-            setTimeout(function() {
-              placeholder$.css(getInitialCardPosition(wrapper$, content$));
-
-              $(document.body).removeClass('noscroll');
-              placeholder$.removeClass('page-animate-in');
-
-              function destroyPlaceholderFn(e) {
-                if (e.target == e.currentTarget && e.originalEvent.propertyName == 'transform') {
-                  var grid$ = wrapper$.parents('.page-card-grid');
-                  placeholder$.off('transitionend', destroyPlaceholderFn);
-                  grid$.removeClass('active');
-                  wrapper$.removeClass('active');
-                  window.setTimeout(function() {
-                    placeholder$.remove();
-                  }, 0);
-                }
-              }
-
-              placeholder$.on('transitionend', destroyPlaceholderFn);
-            }, 20);
-          }
-
-          function getInitialCardPosition(wrapper$, content$) {
-            var gridItem$ = wrapper$.parent();
-            var offset = gridItem$.position();
-
-            // Clear the transform so the size calculation is correct.
-            content$.css({
-              transition: 'none',
-              transform: 'none'
-            });
-            /* Set the initial state to make it overlap the current item. */
-            var initialPosition = {
-              /* Offsets from the relative parent to match it to the clicked image. */
-              top: (offset.top || 0) + parseInt(gridItem$.css('padding-top'), 10),
-              left: (offset.left || 0) + parseInt(gridItem$.css('padding-left'), 10),
-              height: content$.css('height'),
-              width: content$.css('width')
-            };
-            // Reset the styles.
-            content$.css({
-              transition: '',
-              transform: ''
-            });
-
-            return initialPosition;
-          }
-
-          $(window).on('resize', function() {
-            if (resizeFunction) {
-              resizeFunction();
-            }
+                path: pagePath
+              }, "", pagePath)
+            loadPage(wrapper$, pagePath);
           });
 
           $(window).on('popstate', function(e) {
@@ -291,240 +421,32 @@
               closePage();
             }
           });
-        });
-
-        $(function () { // wait for document ready
-          function makeController() {
-            var controller = new ScrollMagic.Controller();
-
-            new ScrollMagic.Scene({triggerElement: "#trigger1", duration: 300})
-                    .setPin("#pin1")
-                    .triggerHook('0')
-                    // .addIndicators({name: "1 (duration: 300)"}) // add indicators (requires plugin)
-                    .addTo(controller);
-
-            new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
-                    .setClassToggle(".project-intro-image", "scrolled")
-                    .triggerHook('0') // add class toggle
-                    // .addIndicators() // add indicators (requires plugin)
-                    .addTo(controller);
-            new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
-                    .setClassToggle(".project-intro-text p", "scrolled")
-                    .triggerHook('0') // add class toggle
-                    // .addIndicators() // add indicators (requires plugin)
-                    .addTo(controller);
-            new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
-                    .setClassToggle(".project-intro-text h1", "scrolled")
-                    .triggerHook('0') // add class toggle
-                    // .addIndicators() // add indicators (requires plugin)
-                    .addTo(controller);
-            new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
-                    .setClassToggle(".project-intro-text .section-divider", "scrolled")
-                    .triggerHook('0') // add class toggle
-                    // .addIndicators() // add indicators (requires plugin)
-                    .addTo(controller);
-            new ScrollMagic.Scene({triggerElement: "#trigger1", offset: 100})
-                    .setClassToggle(".icon-down-wrapper", "scrolled")
-                    .triggerHook('0') // add class toggle
-                    // .addIndicators() // add indicators (requires plugin)
-                    .addTo(controller);
-
-            return controller;
-          }
-
-
-          var controller = null;
-          $( window ).resize(function() {
-            if ($( window ).width() < 767 && controller != null){
+          // End page navigation handling.
+          
+          updateNavBar();
+          triggerAnimation();
+          $(window).on('resize', function(){
+            triggerAnimation();
+            updateNavBar();
+            updateIntroImageRatio();
+            if (resizeFunction) {
+              resizeFunction();
+            }
+            
+            if ($( window ).width() < MQ && controller != null){
               controller.destroy(true);
               controller = null;
-            } else if ($( window ).width() >= 767 && controller == null){
+            } else if ($( window ).width() >= MQ && controller == null){
               controller = makeController();
             }
           });
-          // Trigger the setup.
-          $( window ).resize();
-          });
-
-
-          $(document).ready(function(){
-            $('.image-slider.slider-iterations').slick({
-              infinite: true,
-              slidesToShow: 4,
-              slidesToScroll: 1,
-              responsive: [
-                {
-                  breakpoint: 1200,
-                  settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
-                    infinite: true,
-                  }
-                },
-                {
-                  breakpoint: 992,
-                  settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1
-                  }
-                },
-                {
-                  breakpoint: 550,
-                  settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                  }
-                }
-                // You can unslick at a given breakpoint now by adding:
-                // settings: "unslick"
-                // instead of a settings object
-              ]
-            });
-
-            $('.image-slider.mobile').slick({
-              infinite: true,
-              slidesToShow: 3,
-              slidesToScroll: 1,
-              responsive: [
-                {
-                  breakpoint: 767,
-                  settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1
-                  }
-                },
-                {
-                  breakpoint: 550,
-                  settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                  }
-                }
-                // You can unslick at a given breakpoint now by adding:
-                // settings: "unslick"
-                // instead of a settings object
-              ]
-            });
-
-            $('.image-slider.full').slick({
-              infinite: true,
-              slidesToShow: 1,
-              slidesToScroll: 1,
-            });
-
-            $('.image-slider.slider-final').slick({
-              infinite: true,
-              speed: 300,
-              slidesToShow: 4,
-              slidesToScroll: 1,
-              responsive: [
-                {
-                  breakpoint: 1200,
-                  settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
-                    infinite: true,
-                  }
-                },
-                {
-                  breakpoint: 992,
-                  settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1
-                  }
-                },
-                {
-                  breakpoint: 550,
-                  settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                  }
-                }
-                // You can unslick at a given breakpoint now by adding:
-                // settings: "unslick"
-                // instead of a settings object
-              ]
-              });
-
-            var windowWidth = $( window ).width();
-            var windowHeight = $( window ).height();
-            var windowRatio = windowWidth/windowHeight;
-            // console.log(windowWidth, windowHeight);
-
-            var imageHeight = $('.project-intro-image img').height();
-            var imageWidth = $('.project-intro-image img').width();
-            var imageRatio = imageWidth/imageHeight;
-
-            // var widthRatio = imageWidth/windowWidth;
-            // var heightRatio = imageHeight/windowHeight;
-            console.log(windowHeight, imageHeight);
-            //
-            // console.log(windowRatio, imageRatio);
-            // console.log(widthRatio, heightRatio);
-
-            if (windowRatio <= imageRatio){
-              $('.project-intro-image img').css('height','100%');
-              $('.project-intro-image img').css('width','auto');
-            } else {
-              $('.project-intro-image img').css('width','100%');
-              $('.project-intro-image img').css('height','auto');
-            }
-          });
-
-          $( window ).resize(function() {
-            var windowWidth = $( window ).width();
-            var windowHeight = $( window ).height();
-            var windowRatio = windowWidth/windowHeight;
-            // console.log(windowWidth, windowHeight);
-            $('.project-intro').css('width', windowWidth);
-            $('.scrollmagic-pin-spacer').css('width', windowWidth);
-            $('.project-intro-image').css('width', windowWidth);
-            $('.project-intro-image').css('height', windowHeight);
-
-            $('.project-intro-text').css('width', windowWidth/2);
-            $('.project-intro-text').css('height', windowHeight/2);
-
-            var imageHeight = $('.project-intro-image img').height();
-            var imageWidth = $('.project-intro-image img').width();
-            var imageRatio = imageWidth/imageHeight;
-
-            // var widthRatio = imageWidth/windowWidth;
-            // var heightRatio = imageHeight/windowHeight;
-            console.log(windowHeight, imageHeight);
-            //
-            // console.log(windowRatio, imageRatio);
-            // console.log(widthRatio, heightRatio);
-
-            if (windowRatio <= imageRatio){
-              $('.project-intro-image img').css('height','100%');
-              $('.project-intro-image img').css('width','auto');
-            } else {
-              $('.project-intro-image img').css('width','100%');
-              $('.project-intro-image img').css('height','auto');
-            }
-
-          });
-          $('.icon-down-wrapper').on('click', function (e) {
-              e.preventDefault();
-              $('html,body').animate({
-                  scrollTop: 100
-              }, 700);
-          });
-
+        } // End initMainPage.
+        initMainPage();
+ 
+        update();
       },
       finalize: function() {
         // JavaScript to be fired on all pages, after page specific JS is fired
-
-        $('#typing-animation').typeIt({
-          strings: ["UX Designer.", "Problem Solver.", "Creative Thinker.", "Prototyping Queen.", "Seahawks Fan.", "Coffee Addict."],
-          speed: 150,
-          breakLines: false,
-          autoStart: false,
-          loop: true,
-          startDelay: 8500
-        });
-
-
       }
     },
     // Home page
