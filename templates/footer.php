@@ -5,8 +5,8 @@
   </div>
   <p>&copy; Handmade with <i class="icon-heart" aria-hidden="true"></i> and <i class="icon-coffee-cup" aria-hidden="true"></i> by Louise R Whitaker, 2017</p>
     <div class="social-icon-wrap">
-      <a href="#set-9" class="social-icon icon-github-filled"></a>
-      <a href="#set-9" class="social-icon icon-linkedin-filled"></a>
-      <a href="#set-9" class="social-icon icon-email-filled"></a>
+      <a href="<?php the_field('github', 'option'); ?>" class="social-icon icon-github-filled"></a>
+      <a href="<?php the_field('linked_in', 'option'); ?>" class="social-icon icon-linkedin-filled"></a>
+      <a href="mailto:<?php the_field('email', 'option'); ?>" class="social-icon icon-email-filled"></a>
     </div>
 </footer>
