@@ -14,7 +14,8 @@
     "typeit": "^4.4.0",
     "scrollmagic": "^2.0.5",
     "slick-carousel": "^1.7.1",
-    "headroom.js": "https://unpkg.com/headroom.js/bower.zip"
+    "headroom.min": "https://unpkg.com/headroom.js@0.9.4/dist/headroom.min.js",
+    "jQuery.headroom.min": "https://unpkg.com/headroom.js@0.9.4/dist/jQuery.headroom.min.js"
   },
   "overrides": {
     "waypoints": {
@@ -22,12 +23,6 @@
         "./lib/jquery.waypoints.js",
         "./lib/shortcuts/sticky.js",
         "./lib/shortcuts/inview.js"
-      ]
-    },
-    "headroom.js": {
-      "main": [
-        "./dist/headroom.min.js",
-        "./dist/jQuery.headroom.min.js"
       ]
     }
   }
