@@ -1,8 +1,12 @@
-<?php
 
+<?php
 use Roots\Sage\Setup;
 use Roots\Sage\Wrapper;
 
+$template = basename(get_page_template());
+$posttype = get_post_type();
+
+if ($template == 'front-page.php' || $template == 'page-about.php' || $template == 'page-process.php' || $template == 'page-resume.php' || $posttype == 'project'):
 ?>
 
 <!doctype html>
@@ -77,14 +81,14 @@ use Roots\Sage\Wrapper;
               <h1 class="text-center mb-50">About Me</h1>
             </div>
             <div class="col-md-10 ml-md-auto mr-md-auto">
-              <p class="text-center lead mb-50">I graudated in May 2017 with an MFA in Interactive Media from the University of Miami and now I live in Seattle, WA. I am passionate about developing experiences that are intuitive and make technology more accessible to everyone.</p>
+              <p class="text-center lead mb-50"><?php the_field('about_me_text', 'option'); ?></p>
             </div>
           </div>
 
 
           <div class="row about-me-cards page-card-grid">
             <div class="col-sm-4 about-me-cards-wrapper">
-              <div class="card color1 page-card-content page-card-target">
+              <div class="card color1 page-card-content page-card-target" data-page-path="<?php the_field('resume_page_link', 'option'); ?>">
                 <div class="card-body">
                   <p class="card-icon"><i class="icon-briefcase"></i></p>
                   <h4 class="card-title">My Resume</h4>
@@ -92,7 +96,7 @@ use Roots\Sage\Wrapper;
               </div>
             </div>
             <div class="col-sm-4 about-me-cards-wrapper">
-              <div class="card color2 page-card-content page-card-target">
+              <div class="card color2 page-card-content page-card-target" data-page-path="<?php the_field('process_page_link', 'option'); ?>">
                 <div class="card-body">
                   <p class="card-icon"><i class="icon-process"></i></p>
                   <h4 class="card-title">My Process</h4>
@@ -100,7 +104,7 @@ use Roots\Sage\Wrapper;
               </div>
             </div>
             <div class="col-sm-4 about-me-cards-wrapper">
-              <div class="card color1 page-card-content page-card-target">
+              <div class="card color1 page-card-content page-card-target" data-page-path="<?php the_field('about_page_link', 'option'); ?>">
                 <div class="card-body">
                   <p class="card-icon"><i class="icon-coffee-cup"></i></p>
                   <h4 class="card-title">My Profile</h4>
@@ -117,13 +121,13 @@ use Roots\Sage\Wrapper;
               <h1 class="text-center mb-50">Contact</h1>
             </div>
             <div class="col-md-10 ml-md-auto mr-md-auto">
-              <p class="text-center lead mb-50">Feel free to send me a message below or email me at: <a class="hoverlink" href="#">l.whitaker@umiami.edu</a></p>
+              <p class="text-center lead mb-50">Feel free to send me a message below or email me at: <a class="hoverlink" href="mailto: <?php the_field('email', 'option'); ?>"><?php the_field('email', 'option'); ?></a></p>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-8 ml-md-auto mr-md-auto">
-              <?php echo do_shortcode("[contact-form-7 id='179' title='Contact form 1']"); ?>
+              <?php echo do_shortcode(get_field('form_short_code', 'option')); ?>
             </div>
           </div>
           <img class="section-divider" src="<?= get_template_directory_uri(); ?>/dist/images/divider.svg">
@@ -131,7 +135,7 @@ use Roots\Sage\Wrapper;
 
         <div id="project-page-content-wrapper">
           <div class="close">X</div>
-          <div class="project-page-content">
+          <div id="project-page-content" class="project-page-content">
             <?php get_template_part('templates/header', 'close'); ?>
             <?php include Wrapper\template_path(); ?>
             <?php get_template_part('templates/footer'); ?>
@@ -148,3 +152,33 @@ use Roots\Sage\Wrapper;
   </body>
 
 </html>
+
+<?php else: ?>
+<!doctype html>
+  <html <?php language_attributes(); ?>>
+    <?php get_template_part('templates/head'); ?>
+    <body <?php body_class(); ?>>
+      <!--[if IE]>
+        <div class="alert alert-warning">
+          <?php _e('You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.', 'sage'); ?>
+        </div>
+      <![endif]-->
+      <?php
+        do_action('get_header');
+        get_template_part('templates/header-generic');
+      ?>
+      <div class="wrap container" role="document">
+        <div class="content row">
+          <main class="main">
+            <?php include Wrapper\template_path();?>
+          </main><!-- /.main -->
+        </div><!-- /.content -->
+      </div><!-- /.wrap -->
+      <?php
+        do_action('get_footer');
+        get_template_part('templates/footer');
+        wp_footer();
+      ?>
+    </body>
+  </html>
+<?php endif; ?>

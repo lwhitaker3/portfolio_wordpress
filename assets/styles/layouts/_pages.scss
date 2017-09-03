@@ -191,6 +191,7 @@
   transition-duration: 0.4s;
   -webkit-transform: none;
   transform: none;
+  padding: 0 20px;
 }
 .post-wrapper .post .post-content .meta {
   margin: 0px 0px 15px 0px;
@@ -215,7 +216,7 @@
   }
 }
 /*==========  Media queries  ==========*/
-@media only screen and (max-width: 1080px) {
+@media only screen and (max-width: 1024px) {
   .timeline,
   .timeline .section-inner {
     max-width: none;

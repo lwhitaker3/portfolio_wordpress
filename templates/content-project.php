@@ -1,6 +1,7 @@
 <?php while (have_posts()) : the_post(); ?>
+
   <div id="trigger1"></div>
-  <div id="pin1" class="project-intro left">
+  <div id="pin1" class="project-intro <?php the_field('intro_side'); ?>">
     <div class="project-intro-image">
       <div class="image-wrapper">
         <?php
@@ -12,16 +13,23 @@
     </div>
     <div class="project-intro-text">
       <?php
-        // vars
-        $tags = get_field('tags');
-        // check
-        if( $tags ): ?>
-        <p class="project-category">
-        	<?php foreach( $tags as $tag ): ?>
-        		<?php echo $tag['label']; ?>,
-        	<?php endforeach; ?>
-        </p>
-        <?php endif; ?>
+      // vars
+      $tags = get_field('tags');
+      $lastitem = count($tags) - 1;
+      $i = 0;
+      // check
+      if( $tags ): ?>
+      <p class="project-category">
+      	<?php foreach( $tags as $tag ):
+          if ($i != $lastitem):
+            echo $tag['label']; echo ", ";
+          else:
+            echo $tag['label'];
+          endif;
+          $i++;
+        endforeach; ?>
+      </p>
+      <?php endif; ?>
       <h1 class='display-1'><?php the_title(); ?></h1>
       <p class="project-description lead"><?php the_field('project_intro'); ?></p>
       <p class="project-date"><?php the_field('project_date'); ?></p>
@@ -279,6 +287,10 @@
                       </div>
                     </div>
                     <?php endif; ?>
+                  <?php elseif ( get_row_layout() == 'text' ): ?>
+                    <div class="row">
+                      <?php the_sub_field('text');?>
+                    </div>
                   <?php endif; ?>
                 <?php endwhile; ?>
               <?php endif; ?>

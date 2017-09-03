@@ -19,6 +19,7 @@ var runSequence  = require('run-sequence');
 var sass         = require('gulp-sass');
 var sourcemaps   = require('gulp-sourcemaps');
 var uglify       = require('gulp-uglify');
+var zip          = require('gulp-zip');
 
 // See https://github.com/austinpray/asset-builder
 var manifest = require('asset-builder')('./assets/manifest.json');
@@ -27,6 +28,20 @@ var manifest = require('asset-builder')('./assets/manifest.json');
 // - `path.source` - Path to the source files. Default: `assets/`
 // - `path.dist` - Path to the build directory. Default: `dist/`
 var path = manifest.paths;
+
+var packagePaths = [
+    '**/*',
+    '!**/node_modules/**',
+    '!**/components/**',
+    '!**/scss/**',
+    '!**/bower.json',
+    '!**/gulpfile.js',
+    '!**/package.json',
+    '!**/composer.json',
+    '!**/composer.lock',
+    '!**/codesniffer.ruleset.xml',
+    '!**/packaged/*',
+  ];
 
 // `config` - Store arbitrary configuration values here.
 var config = manifest.config || {};
@@ -165,6 +180,16 @@ var writeToManifest = function(directory) {
     .pipe(gulp.dest, path.dist)();
 };
 
+// Package task
+gulp.task('package', ['build'], function() {
+  var date = new Date().toDateString().replace(/ /g, '_');
+  var title = 'portfolio' + '_' + date + '.zip';
+
+  return gulp.src(packagePaths)
+    .pipe(zip(title))
+    .pipe(gulp.dest('packaged'));
+});
+
 // ## Gulp tasks
 // Run `gulp -T` for a task summary
 
@@ -223,10 +248,7 @@ gulp.task('images', function() {
     .pipe(imagemin([
       imagemin.jpegtran({progressive: true}),
       imagemin.gifsicle({interlaced: true}),
-      imagemin.svgo({plugins: [
-        {removeUnknownsAndDefaults: false},
-        {cleanupIDs: false}
-      ]})
+      imagemin.svgo({plugins: [{removeUnknownsAndDefaults: false}, {cleanupIDs: false}]})
     ]))
     .pipe(gulp.dest(path.dist + 'images'))
     .pipe(browserSync.stream());
