@@ -465,16 +465,16 @@
       }
     }
   }
-  .cssanimations .timeline-content.is-hidden {
+  .timeline-content.is-hidden {
     visibility: hidden;
   }
-  .cssanimations .timeline-content.bounce-in {
+  .timeline-content.bounce-in {
     visibility: visible;
     -webkit-animation: bounce-2 0.6s;
     -moz-animation: bounce-2 0.6s;
     animation: bounce-2 0.6s;
   }
-  .cssanimations .timeline-block:nth-child(even) .timeline-content.bounce-in {
+  .timeline-block:nth-child(even) .timeline-content.bounce-in {
     -webkit-animation: bounce-2-inverse 0.6s;
     -moz-animation: bounce-2-inverse 0.6s;
     animation: bounce-2-inverse 0.6s;
