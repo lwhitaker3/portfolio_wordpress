@@ -489,7 +489,6 @@
               if (e.target == e.currentTarget && e.originalEvent.propertyName == 'transform') {
                 placeholder$.off('transitionend', showPageContentFn);
                 mainScrollLocation = $('html, body').scrollTop();
-                console.log(mainScrollLocation);
                 $('#main-page-content-wrapper').addClass('show-project');
                 $('html, body').scrollTop(0);
               }
