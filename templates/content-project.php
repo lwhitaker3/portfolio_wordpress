@@ -264,11 +264,11 @@
                   <?php elseif ( get_row_layout() == 'carousel_3' ):
                     if( have_rows('images') ): ?>
                     <div class="row">
-                      <div class="col-sm-12">
+                      <div class="col-sm-12 mb-50">
                         <div class="image-slider mobile">
                           <?php while ( have_rows('images') ) : the_row();
                             $carousel_image = get_sub_field('image');?>
-                            <div><img src="<?php echo $carousel_image['url']; ?>" alt="<?php echo $carousel_image['alt']; ?>"><?php echo $carousel_image['caption']; ?></div>
+                            <div><img src="<?php echo $carousel_image['url']; ?>" alt="<?php echo $carousel_image['alt']; ?>"><p><?php echo $carousel_image['caption']; ?></p></div>
                           <?php endwhile; ?>
                         </div>
                       </div>
@@ -277,7 +277,7 @@
                   <?php elseif ( get_row_layout() == 'carousel_1' ):
                     if( have_rows('images') ): ?>
                     <div class="row">
-                      <div class="col-sm-12">
+                      <div class="col-sm-12 mb-50">
                         <div class="image-slider full">
                           <?php while ( have_rows('images') ) : the_row();
                             $carousel_image_2 = get_sub_field('image');?>
@@ -288,7 +288,7 @@
                     </div>
                     <?php endif; ?>
                   <?php elseif ( get_row_layout() == 'text' ): ?>
-                    <div class="row">
+                    <div class="row mb-50">
                       <?php the_sub_field('text');?>
                     </div>
                   <?php endif; ?>
