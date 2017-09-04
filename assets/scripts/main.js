@@ -22,7 +22,50 @@
         // Begin hero scroll button.
         var resizeFunction = null;
         var controller = null;
-        
+
+        function setupPostAnimationAndFade() {
+          $(window).on('scroll resize', function() {
+            var posts = $('.post-wrapper .post');
+            if (posts.length == 0) {
+              return;
+            }
+            var currScroll = Math.max($(window).scrollTop(), $(document).scrollTop()),
+              windowHeight = $(window).height(), // Needs to be here because window can resize
+              overScroll = Math.ceil(windowHeight*.20),
+              treshhold = (currScroll + windowHeight) - overScroll,
+              stemWrapper = $('.stem-wrapper'),
+              halfScreen = $(window).height() / 2,
+              scrollSplit = currScroll + halfScreen;
+
+            posts.removeClass('active')
+            posts.each(function() {
+              var post = $(this),
+                postScroll = post.offset().top
+
+              if(postScroll > treshhold) {
+                post.addClass('hidden');
+              } else {
+                post.removeClass('hidden');
+              }
+
+              if(scrollSplit > postScroll) {
+                // Add active class to fade in
+                post.addClass('active');
+
+                // Get post color
+                var color = post.data('stem-color') ? post.data('stem-color') : null,
+                  allColors = 'color-pink color-orange'
+
+                stemWrapper.removeClass(allColors);
+
+                if(color !== null) {
+                  stemWrapper.addClass('color-' + color);
+                }
+              }
+            });
+          });
+        }
+
         function makeController() {
           // If it's not visible, don't create a scene.
           if ($('#trigger1').length == 0) {
@@ -64,7 +107,7 @@
 
           return controller;
         }
-        
+
         function getInitialCardPosition(wrapper$, content$) {
           var gridItem$ = wrapper$.parent();
           var offset = gridItem$.position();
@@ -90,7 +133,7 @@
 
           return initialPosition;
         }
-        
+
         function closePage() {
           resizeFunction = null;
           $('#main-page-content-wrapper').removeClass('show-project');
@@ -130,7 +173,7 @@
             placeholder$.on('transitionend', destroyPlaceholderFn);
           }, 20);
         }
-        
+
         function updateIntroImageRatio() {
           var windowWidth = $( window ).width();
           var windowHeight = $( window ).height();
@@ -155,7 +198,7 @@
             $('.project-intro-image img').css('height','auto');
           }
         }
-        
+
         function update() {
           $('.back-to-top').off('click').on('click', function (e) {
               e.preventDefault();
@@ -194,24 +237,77 @@
             slidesToShow: 1,
             slidesToScroll: 1,
           });
-          
+
           $('#project-page-content-wrapper .close-icon').off('click').on('click', function() {
             history.pushState({
               path: "/"
             }, "", "/");
             closePage();
           });
-          
-          // Trigger the setup.
-          $( window ).resize();
+
           $('#project-page-content-wrapper .icon-down-wrapper').off('click').on('click', function (e) {
               e.preventDefault();
               $('#project-page-content-wrapper').animate({
                   scrollTop: 100
               }, 700);
           });
+
+          $('.post-wrapper .post .stem-overlay .icon').off('click').on('click', function(e) {
+            e.preventDefault();
+
+            var icon = $(this),
+              post = icon.closest('.post'),
+              postTopOffset = post.offset().top,
+              postHeight = post.height(),
+              halfScreen = $(window).height() / 2,
+              scrollTo = postTopOffset - halfScreen + (postHeight/2);
+
+            $('html, body').animate({
+              scrollTop: scrollTo
+            }, 750);
+          });
+
+          function hideBlocks(blocks, offset) {
+            blocks.each(function(){
+              if ($(this).offset().top > $(window).scrollTop()+$(window).height()*offset ) {
+                $(this).find('.timeline-img, .timeline-content').addClass('is-hidden');
+              }
+            });
+          }
+
+          function showBlocks(blocks, offset) {
+            blocks.each(function(){
+              if($(this).offset().top <= $(window).scrollTop()+$(window).height()*offset
+                  && $(this).find('.timeline-img').hasClass('is-hidden')) {
+                $(this).find('.timeline-img, .timeline-content').removeClass('is-hidden').addClass('bounce-in');
+              }
+            });
+          }
+
+          var timelineBlocks = $('.timeline-block'),
+            offset = 0.8;
+          if (timelineBlocks.length > 0) {
+            // Set on a delay in order to allow the page to render.
+            window.setTimeout(function() {
+              //hide timeline blocks which are outside the viewport
+              hideBlocks(timelineBlocks, offset);
+
+              //on scolling, show/animate timeline blocks when enter the viewport
+              $(window).on('scroll.timeline', function(){
+                (!window.requestAnimationFrame)
+                  ? setTimeout(function(){ showBlocks(timelineBlocks, offset); }, 100)
+                  : window.requestAnimationFrame(function(){ showBlocks(timelineBlocks, offset); });
+              });
+            }, 200);
+          } else {
+            $(window).off('scroll.timeline');
+          }
+
+          // Trigger the setup.
+          $(window).resize();
+          $(window).scroll();
         }
-        
+
         function initMainPage() {
           // Begin MixItUp filtering for projects.
           var containerEl = document.querySelector('.portfolio-cards');
@@ -223,7 +319,7 @@
           // End MixItUp filtering for projects.
           // Add hoverdir to project cards.
           $(' #portfolio-cards > .mix > .content-wrapper ').each( function() { $(this).hoverdir(); } );
-          
+
           // Begin hero scroll button.
           $('.intro-scroll-wrapper').on('click', function (e) {
             e.preventDefault();
@@ -233,7 +329,7 @@
             }, 700);
           });
           // End hero scroll button.
-          
+
           // Begin intro fade animation.
           var introSection = $('#jumbotron-content'),
           introSectionHeight = introSection.height(),
@@ -241,19 +337,19 @@
           scaleSpeed = 0.3,
           //change opacitySpeed if you want to change the speed of opacity reduction effect
           opacitySpeed = 1;
-          
+
           //update this value if you change this breakpoint in the style.css file (or _layout.scss if you use SASS)
           var MQ = 767;
-          
+
           //bind the scale event to window scroll if window width > $MQ (unbind it otherwise)
           function triggerAnimation(){
             if($(window).width()>= MQ) {
-              $(window).on('scroll', function(){
+              $(window).on('scroll.animateIntro', function(){
                 //The window.requestAnimationFrame() method tells the browser that you wish to perform an animation- the browser can optimize it so animations will be smoother
                 window.requestAnimationFrame(animateIntro);
               });
             } else {
-              $(window).off('scroll');
+              $(window).off('scroll.animateIntro');
             }
           }
           //assign a scale transformation to the introSection element and reduce its opacity
@@ -284,7 +380,7 @@
             startDelay: 8500
           });
           // End typing animation.
-          
+
           // Begin navbar links.
           $("#main-nav ul li a[href^='#']").on('click', function(e) {
            // prevent default anchor click behavior
@@ -305,7 +401,7 @@
 
           });
           // End navbar links.
-          
+
           // Begin navbar mobile menu toggle.
           $( ".navbar-toggler" ).click(function() {
             if ($(".navbar-collapse").hasClass("show")){
@@ -317,7 +413,7 @@
             }
           });
           // End navbar mobile menu toggle.
-          
+
           // Begin navbar sticky offset.
           function updateNavBar() {
             var headroom = nav.data('headroom');
@@ -339,7 +435,7 @@
             stuckClass: 'fixed-top',
           });
           // End navbar sticky offset.
-          
+
           // Begin page navigation handling.
           function loadPage(wrapper$, pagePath) {
             if (pagePath) {
@@ -401,7 +497,7 @@
 
             placeholder$.on('transitionend', showPageContentFn);
           }
-          
+
           $('.page-card-grid .page-card-target').on('click', function(e) {
             var wrapper$ = $(e.currentTarget);
             var pagePath = wrapper$.data('pagePath');
@@ -425,7 +521,16 @@
             }
           });
           // End page navigation handling.
-          
+
+          // Allow user to cancel scroll animation by manually scrolling
+          $('html, body').on('scroll mousedown DOMMouseScroll mousewheel keyup', function(e) {
+            if ( e.which > 0 || e.type === 'mousedown' || e.type === 'mousewheel') {
+              $(this).stop();
+            }
+          });
+
+          setupPostAnimationAndFade();
+
           updateNavBar();
           triggerAnimation();
           $(window).on('resize', function(){
@@ -435,7 +540,7 @@
             if (resizeFunction) {
               resizeFunction();
             }
-            
+
             if ($( window ).width() < MQ && controller != null){
               controller.destroy(true);
               controller = null;
@@ -445,7 +550,7 @@
           });
         } // End initMainPage.
         initMainPage();
- 
+
         update();
       },
       finalize: function() {
