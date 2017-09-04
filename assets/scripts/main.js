@@ -346,7 +346,7 @@
                 controller.destroy(true);
                 controller = null;
               }
-              $('#project-page-content').empty()
+              $('#project-page-content-wrapper').empty()
                   .load(pagePath + ' #project-page-content', function() {
                     update();
                   });

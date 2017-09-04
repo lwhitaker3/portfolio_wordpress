@@ -134,7 +134,6 @@ if ($template == 'front-page.php' || $template == 'page-about.php' || $template 
         </div>
 
         <div id="project-page-content-wrapper">
-          <div class="close">X</div>
           <div id="project-page-content" class="project-page-content">
             <?php get_template_part('templates/header', 'close'); ?>
             <?php include Wrapper\template_path(); ?>
