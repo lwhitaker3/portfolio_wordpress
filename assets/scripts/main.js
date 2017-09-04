@@ -18,6 +18,7 @@
     // All pages
     'common': {
       init: function() {
+        var mainScrollLocation = 0;
         // Begin hero scroll button.
         var resizeFunction = null;
         var controller = null;
@@ -92,7 +93,7 @@
         
         function closePage() {
           resizeFunction = null;
-          $('#project-page-content-wrapper').removeClass('visible');
+          $('#main-page-content-wrapper').removeClass('show-project');
           if (controller) {
             controller.destroy(true);
             controller = null;
@@ -109,9 +110,9 @@
           }
 
           setTimeout(function() {
+            $('html, body').scrollTop(mainScrollLocation);
             placeholder$.css(getInitialCardPosition(wrapper$, content$));
 
-            $(document.body).removeClass('noscroll');
             placeholder$.removeClass('page-animate-in');
 
             function destroyPlaceholderFn(e) {
@@ -391,8 +392,10 @@
             function showPageContentFn(e) {
               if (e.target == e.currentTarget && e.originalEvent.propertyName == 'transform') {
                 placeholder$.off('transitionend', showPageContentFn);
-                $('#project-page-content-wrapper').addClass('visible');
-                $(document.body).addClass('noscroll');
+                mainScrollLocation = $('html, body').scrollTop();
+                console.log(mainScrollLocation);
+                $('#main-page-content-wrapper').addClass('show-project');
+                $('html, body').scrollTop(0);
               }
             }
 

@@ -19,7 +19,8 @@ if ($template == 'front-page.php' || $template == 'page-about.php' || $template 
       </div>
     <![endif]-->
 
-    <div class="jumbotron-wrapper">
+    <div id="main-page-content-wrapper">
+      <div class="jumbotron-wrapper">
         <div class="jumbotron jumbotron-fluid">
           <div class="container jumbotron-content-wrapper">
             <div id="jumbotron-content">
@@ -33,7 +34,6 @@ if ($template == 'front-page.php' || $template == 'page-about.php' || $template 
         </div>
         <div class="intro-scroll-wrapper"><i class="intro-scroll icon-down"></i></div>
       </div>
-
 
       <?php get_template_part('templates/header'); ?>
 
@@ -85,7 +85,6 @@ if ($template == 'front-page.php' || $template == 'page-about.php' || $template 
             </div>
           </div>
 
-
           <div class="row about-me-cards page-card-grid">
             <div class="col-sm-4 about-me-cards-wrapper">
               <div class="card color1 page-card-content page-card-target" data-page-path="<?php the_field('resume_page_link', 'option'); ?>">
@@ -132,22 +131,21 @@ if ($template == 'front-page.php' || $template == 'page-about.php' || $template 
           </div>
           <img class="section-divider" src="<?= get_template_directory_uri(); ?>/dist/images/divider.svg">
         </div>
-
-        <div id="project-page-content-wrapper">
-          <div id="project-page-content" class="project-page-content">
-            <?php get_template_part('templates/header', 'close'); ?>
-            <?php include Wrapper\template_path(); ?>
-            <?php get_template_part('templates/footer'); ?>
-          </div>
-        </div>
-
-
-
-    <?php
-      do_action('get_footer');
-      get_template_part('templates/footer');
-      wp_footer();
-    ?>
+      </div>
+      <?php
+        do_action('get_footer');
+        get_template_part('templates/footer');
+        wp_footer();
+      ?>
+    </div>
+    
+    <div id="project-page-content-wrapper">
+      <div id="project-page-content" class="project-page-content">
+        <?php get_template_part('templates/header', 'close'); ?>
+        <?php include Wrapper\template_path(); ?>
+        <?php get_template_part('templates/footer'); ?>
+      </div>
+    </div>
   </body>
 
 </html>
