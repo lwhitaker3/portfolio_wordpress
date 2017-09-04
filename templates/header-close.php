@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md fixed-top">
   <a class="navbar-brand" href="#">
-    <div id="logo-wrapper">
+    <div class="logo-wrapper">
       <?php get_template_part('templates/svg/logo'); ?>
     </div>
   </a>

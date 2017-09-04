@@ -5,6 +5,8 @@ use Roots\Sage\Wrapper;
 
 $template = basename(get_page_template());
 $posttype = get_post_type();
+// Keep an index to generate unique IDs in the SVG.
+$logo_index = 1;
 
 if ($template == 'front-page.php' || $template == 'page-about.php' || $template == 'page-process.php' || $template == 'page-resume.php' || $posttype == 'project'):
 ?>

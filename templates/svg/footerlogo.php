@@ -1,7 +1,12 @@
-<svg version="1.1" id="logo-name" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+<?php
+  global $logo_index;
+  $logo_index_local = $logo_index++;
+?>
+
+<svg version="1.1" class="logo-name" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 viewBox="0 0 120 60" xml:space="preserve">
   <defs>
-    <clipPath id="logo-name-clip">
+    <clipPath id="logo-name-clip-<?php echo $logo_index_local ?>">
       <path d="M117.7,38.7c-0.2-0.3-0.4-0.4-0.8-0.4c-0.3,0-0.6,0.1-0.8,0.3c-2.4,2.7-4.6,4.7-6.7,6
       c-2.1,1.3-3.8,2-5,2c-0.8,0-1.4-0.3-1.8-0.8c-0.4-0.5-0.6-1.2-0.6-2c0-0.5,0-1,0.1-1.4c0.1-0.5,0.2-1,0.3-1.5
       c3.4-0.8,6-1.9,7.7-3.3c1.7-1.4,2.6-2.8,2.6-4.2c0-0.9-0.3-1.6-0.9-2.1c-0.6-0.5-1.4-0.8-2.3-0.8c-1.3,0-2.5,0.5-3.7,1.4
@@ -64,12 +69,12 @@ viewBox="0 0 120 60" xml:space="preserve">
     </clipPath>
   </defs>
 
-  <g id="stroke" clip-path="url(#logo-name-clip)" stroke-width="30">
-    <linearGradient id="gadient-name" gradientUnits="userSpaceOnUse" x1="74.386" y1="67.6357" x2="36.286" y2="1.6446">
+  <g class="stroke" clip-path="url(#logo-name-clip-<?php echo $logo_index_local ?>)" stroke-width="30">
+    <linearGradient id="gradient-name-<?php echo $logo_index_local ?>" gradientUnits="userSpaceOnUse" x1="74.386" y1="67.6357" x2="36.286" y2="1.6446">
     <stop  offset="0.2596" style="stop-color:#F58A29"/>
     <stop  offset="0.7922" style="stop-color:#E72264"/>
     </linearGradient>
-    <path class="louise" fill="none" stroke="url(#gadient-name)" stroke-miterlimit="10" d="M8.6,18.4c-0.5,2.2,2.5,4.2,4.7,4.8c6.1,1.6,12.4,0.7,18.2-1.8c1.7-0.7,3.3-1.7,4.3-3.2c1-1.5,1.5-4,0.1-5.1
+    <path class="louise" fill="none" stroke="url(#gradient-name-<?php echo $logo_index_local ?>)" stroke-miterlimit="10" d="M8.6,18.4c-0.5,2.2,2.5,4.2,4.7,4.8c6.1,1.6,12.4,0.7,18.2-1.8c1.7-0.7,3.3-1.7,4.3-3.2c1-1.5,1.5-4,0.1-5.1
     c-1.4-1.1-3.9-0.5-5.2,0.6c-1.3,1.1-2.7,2.7-3.4,4.2c-2.9,6.3-5.1,12.5-8,18.8c-2,4.3-4.7,9.1-9.1,10.9c-1.9,0.8-4.3,1.1-6,0.1
     c-1.7-1.1-2.5-3.7-1.5-5.5c0.6-1.1,1.7-1.8,2.9-2.1c4.2-1.2,8.4,1.6,12.1,4.1s8.4,4.7,12.2,2.6c1.4-0.8,2.8-2.1,3.8-3.3
     c3.4-4.1,6.1-8.8,10.5-12.2c-3.4,2.8-6.8,6.8-7.6,11.2c-0.3,1.9,0.2,4.2,1.9,4.9c1.3,0.5,2.8,0.1,4-0.7c3.6-2.5,6.2-6.3,7.2-10.6

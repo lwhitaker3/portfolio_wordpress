@@ -100,9 +100,9 @@
       line-height: 1;
     }
   }
-  #logo-wrapper{
+  .logo-wrapper{
     height: 50px;
-    #logo-name{
+    .logo-name{
       height:50px;
     }
     svg{
@@ -113,7 +113,7 @@
 
     }
     svg:hover{
-      #stroke .louise {
+      .stroke .louise {
         stroke-dasharray: 600;
         stroke-dashoffset: 600;
         stroke-width: 2.5;
