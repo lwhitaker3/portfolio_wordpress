@@ -340,36 +340,46 @@
           // End hero scroll button.
 
           // Begin intro fade animation.
-          var introSection = $('#jumbotron-content'),
-          introSectionHeight = introSection.height(),
-          //change scaleSpeed if you want to change the speed of the scale effect
-          scaleSpeed = 0.3,
-          //change opacitySpeed if you want to change the speed of opacity reduction effect
-          opacitySpeed = 1;
-
           //update this value if you change this breakpoint in the style.css file (or _layout.scss if you use SASS)
           var MQ = 767;
+          var introHidden = false;
 
           //bind the scale event to window scroll if window width > $MQ (unbind it otherwise)
-          function triggerAnimation(){
+          function setUpIntroAnimation(){
             if($(window).width()>= MQ) {
-              $(window).on('scroll.animateIntro', function(){
-                //The window.requestAnimationFrame() method tells the browser that you wish to perform an animation- the browser can optimize it so animations will be smoother
-                window.requestAnimationFrame(animateIntro);
-              });
+              $(window).off('scroll.animateIntro resize.animateIntro')
+                  .on('scroll.animateIntro resize.animateIntro', function(){
+                    window.requestAnimationFrame(animateIntro);
+                  });
             } else {
-              $(window).off('scroll.animateIntro');
+              introSection = $('#jumbotron-content').css({
+                '-moz-transform': 'none',
+                '-webkit-transform': 'none',
+                '-ms-transform': 'none',
+                '-o-transform': 'none',
+                'transform': 'none',
+                'opacity': 1
+              });
+              $(window).off('scroll.animateIntro resize.animateIntro');
             }
           }
           //assign a scale transformation to the introSection element and reduce its opacity
           function animateIntro () {
+            var introSection = $('#jumbotron-content'),
+              introSectionHeight = introSection.height(),
+              //change scaleSpeed if you want to change the speed of the scale effect
+              scaleSpeed = 0.3,
+              //change opacitySpeed if you want to change the speed of opacity reduction effect
+              opacitySpeed = 1;
+
             var scrollPercentage = ($(window).scrollTop()/introSectionHeight).toFixed(5),
               scaleValue = 1 - scrollPercentage*scaleSpeed;
             //check if the introSection is still visible
-            if( $(window).scrollTop() < introSectionHeight) {
+            if(!introHidden || scrollPercentage < 1) {
+              introHidden = scrollPercentage >= 1;
               introSection.css({
-                  '-moz-transform': 'scale(' + scaleValue + ') translateZ(0)',
-                  '-webkit-transform': 'scale(' + scaleValue + ') translateZ(0)',
+                '-moz-transform': 'scale(' + scaleValue + ') translateZ(0)',
+                '-webkit-transform': 'scale(' + scaleValue + ') translateZ(0)',
                 '-ms-transform': 'scale(' + scaleValue + ') translateZ(0)',
                 '-o-transform': 'scale(' + scaleValue + ') translateZ(0)',
                 'transform': 'scale(' + scaleValue + ') translateZ(0)',
@@ -556,10 +566,10 @@
 
           setupPostAnimationAndFade();
 
+          setUpIntroAnimation();
           updateNavBar();
-          triggerAnimation();
           $(window).on('resize', function(){
-            triggerAnimation();
+            setUpIntroAnimation();
             updateNavBar();
             updateIntroImageRatio();
             if (resizeFunction) {
