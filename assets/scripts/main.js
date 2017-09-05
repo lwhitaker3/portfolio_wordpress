@@ -20,7 +20,6 @@
       init: function() {
         var mainScrollLocation = 0;
         // Begin hero scroll button.
-        var resizeFunction = null;
         var controller = null;
 
         function setupPostAnimationAndFade() {
@@ -134,23 +133,38 @@
           return initialPosition;
         }
 
+        function getFinalCardPosition(grid$, placeholder$) {
+          var gridOffset = grid$.offset();
+          return {
+            /* Offsets from the relative parent to set it at the upper left corner. */
+            top: -(gridOffset.top - scrollY),
+            left: -(gridOffset.left - scrollX),
+            height: document.documentElement.clientHeight,
+            width: document.documentElement.clientWidth
+          };
+        }
+
         function closePage() {
-          resizeFunction = null;
           $('#main-page-content-wrapper').removeClass('show-project');
           if (controller) {
             controller.destroy(true);
             controller = null;
           }
           $('#project-page-content').empty();
-          var wrapper$ = $('.page-card-grid .page-card-target.active');
 
-          var content$ = wrapper$.find('.page-card-content').addBack('.page-card-content');
           var placeholder$ = $('.page-card-grid .placeholder');
 
           // No placeholder, nothing to close.
           if (!placeholder$.length) {
             return;
           }
+
+          var wrapper$ = $('.page-card-grid .page-card-target.active');
+          var grid$ = wrapper$.parents('.page-card-grid');
+          placeholder$.css('transitionDuration', 0);
+          placeholder$.css(getFinalCardPosition(grid$, placeholder$));
+          placeholder$.css('transitionDuration', '');
+          var content$ = wrapper$.find('.page-card-content').addBack('.page-card-content');
 
           setTimeout(function() {
             $('html, body').scrollTop(mainScrollLocation);
@@ -502,19 +516,10 @@
              * Set the new final values after a delay. The delay makes sure the rendering was completed,
              * otherwise the transition wouldn't register for the starting state.
              */
-            resizeFunction = function() {
-              var gridOffset = grid$.offset();
+            setTimeout(function() {
               placeholder$.addClass('page-animate-in');
-              placeholder$.css({
-                /* Offsets from the relative parent to set it at the upper left corner. */
-                top: -(gridOffset.top - scrollY),
-                left: -(gridOffset.left - scrollX),
-                height: document.documentElement.clientHeight,
-                width: document.documentElement.clientWidth
-              });
-            }
-
-            setTimeout(resizeFunction, 20);
+              placeholder$.css(getFinalCardPosition(grid$, placeholder$));
+            }, 20);
 
             function showPageContentFn(e) {
               if (e.target == e.currentTarget && e.originalEvent.propertyName == 'transform') {
@@ -572,9 +577,6 @@
             setUpIntroAnimation();
             updateNavBar();
             updateIntroImageRatio();
-            if (resizeFunction) {
-              resizeFunction();
-            }
 
             if ($( window ).width() < MQ && controller != null){
               controller.destroy(true);
