@@ -6,7 +6,7 @@
   </a>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
-      <a class="nav-link close-icon" href="#work"><i class="icon-close"></i></a>
+      <a class="nav-link close-icon" href="javascript:;" data-page-path="<?php echo site_url() ?>"><i class="icon-close"></i></a>
     </li>
   </ul>
 </nav>

@@ -154,6 +154,7 @@
 
           setTimeout(function() {
             $('html, body').scrollTop(mainScrollLocation);
+            console.log('Resetting on close: ' + mainScrollLocation);
             placeholder$.css(getInitialCardPosition(wrapper$, content$));
 
             placeholder$.removeClass('page-animate-in');
@@ -238,10 +239,13 @@
             slidesToScroll: 1,
           });
 
-          $('#project-page-content-wrapper .close-icon').off('click').on('click', function() {
+          $('#project-page-content-wrapper .close-icon').off('click').on('click', function(e) {
+            var path = $(e.currentTarget).data('pagePath');
             history.pushState({
-              path: "/"
-            }, "", "/");
+              path: path,
+              isRoot: true,
+              scrollTop: $('html, body').scrollTop()
+            }, "", path);
             closePage();
           });
 
@@ -309,6 +313,11 @@
         }
 
         function initMainPage() {
+          window.history.replaceState({
+            path: window.location.href,
+            isRoot: true,
+            scrollTop: 0
+          }, "", window.location.href);
           // Begin MixItUp filtering for projects.
           var containerEl = document.querySelector('.portfolio-cards');
           var mixer = mixitup(containerEl, {
@@ -438,6 +447,17 @@
 
           // Begin page navigation handling.
           function loadPage(wrapper$, pagePath) {
+            var pageLoaded = false;
+            var animationComplete = false;
+            var nextScrollLocation = mainScrollLocation;
+            function loadMaybeComplete() {
+              if(pageLoaded && animationComplete) {
+                update();
+                $('html, body').scrollTop(nextScrollLocation);
+                console.log('Scrolling on open: ' + nextScrollLocation);
+              }
+            }
+
             if (pagePath) {
               if (controller) {
                 controller.destroy(true);
@@ -445,9 +465,11 @@
               }
               $('#project-page-content-wrapper').empty()
                   .load(pagePath + ' #project-page-content', function() {
-                    update();
+                    pageLoaded = true;
+                    loadMaybeComplete();
                   });
             }
+
             var content$ = wrapper$.find('.page-card-content').addBack('.page-card-content');
             var clone$ = content$.clone();
 
@@ -490,7 +512,8 @@
                 placeholder$.off('transitionend', showPageContentFn);
                 mainScrollLocation = $('html, body').scrollTop();
                 $('#main-page-content-wrapper').addClass('show-project');
-                $('html, body').scrollTop(0);
+                animationComplete = true;
+                loadMaybeComplete();
               }
             }
 
@@ -501,8 +524,11 @@
             var wrapper$ = $(e.currentTarget);
             var pagePath = wrapper$.data('pagePath');
             history.pushState({
-                path: pagePath
+                path: pagePath,
+                isRoot: false,
+                scrollTop: $('html, body').scrollTop()
               }, "", pagePath)
+            mainScrollLocation = 0;
             loadPage(wrapper$, pagePath);
           });
 
@@ -512,7 +538,8 @@
               return;
             }
 
-            if (state.path != '/') {
+            mainScrollLocation = state.scrollTop;
+            if (!state.isRoot) {
               var wrapper$ = $('[data-page-path="' + state.path + '"]');
               loadPage(wrapper$, state.path);
             } else {
@@ -546,6 +573,13 @@
             } else if ($( window ).width() >= MQ && controller == null){
               controller = makeController();
             }
+          });
+
+          $(window).on('scroll', function() {
+            var currentState = history.state;
+            currentState.scrollTop = $('html, body').scrollTop();
+            console.log('Replacing: ', currentState.path, currentState.scrollTop);
+            history.replaceState(currentState, '', currentState.path);
           });
         } // End initMainPage.
         initMainPage();
