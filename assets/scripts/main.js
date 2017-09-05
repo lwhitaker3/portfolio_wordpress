@@ -250,8 +250,9 @@
 
           $('#project-page-content-wrapper .icon-down-wrapper').off('click').on('click', function (e) {
               e.preventDefault();
-              $('#project-page-content-wrapper').animate({
-                  scrollTop: 100
+              $('html, body').animate({
+                  // Just past the scroll magic trigger.
+                  scrollTop: $('#trigger1').offset().top + 100
               }, 700);
           });
 
