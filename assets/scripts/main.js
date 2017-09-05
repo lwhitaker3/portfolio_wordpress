@@ -154,7 +154,6 @@
 
           setTimeout(function() {
             $('html, body').scrollTop(mainScrollLocation);
-            console.log('Resetting on close: ' + mainScrollLocation);
             placeholder$.css(getInitialCardPosition(wrapper$, content$));
 
             placeholder$.removeClass('page-animate-in');
@@ -454,7 +453,6 @@
               if(pageLoaded && animationComplete) {
                 update();
                 $('html, body').scrollTop(nextScrollLocation);
-                console.log('Scrolling on open: ' + nextScrollLocation);
               }
             }
 
@@ -578,7 +576,6 @@
           $(window).on('scroll', function() {
             var currentState = history.state;
             currentState.scrollTop = $('html, body').scrollTop();
-            console.log('Replacing: ', currentState.path, currentState.scrollTop);
             history.replaceState(currentState, '', currentState.path);
           });
         } // End initMainPage.
