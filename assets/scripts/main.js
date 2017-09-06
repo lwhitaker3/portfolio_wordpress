@@ -546,6 +546,9 @@
             loadPage(wrapper$, pagePath);
           });
 
+          if (history.scrollRestoration) {
+            history.scrollRestoration = 'manual';
+          }
           $(window).on('popstate', function(e) {
             var state = e.originalEvent.state;
             if (!state || !state.path) {
