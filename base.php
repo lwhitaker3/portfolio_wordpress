@@ -8,6 +8,13 @@ $posttype = get_post_type();
 // Keep an index to generate unique IDs in the SVG.
 $logo_index = 1;
 
+global $wp;
+
+$current_url =  home_url( $wp->request );
+$base_url = site_url();
+
+$is_base = $current_url == $base_url;
+
 if ($template == 'front-page.php' || $template == 'page-about.php' || $template == 'page-process.php' || $template == 'page-resume.php' || $posttype == 'project'):
 ?>
 
@@ -21,7 +28,7 @@ if ($template == 'front-page.php' || $template == 'page-about.php' || $template 
       </div>
     <![endif]-->
 
-    <div id="main-page-content-wrapper">
+    <div id="main-page-content-wrapper" class="<?php if (!$is_base) echo 'show-project'; ?>">
       <div class="jumbotron-wrapper">
         <div class="jumbotron jumbotron-fluid">
           <div class="container jumbotron-content-wrapper">
