@@ -18,7 +18,7 @@
     // All pages
     'common': {
       init: function() {
-        var mainScrollLocation = 0;
+        var scrollFunction = function() { $('html, body').scrollTop(0); };
         // Begin hero scroll button.
         var controller = null;
 
@@ -146,6 +146,7 @@
 
         function closePage() {
           $('#main-page-content-wrapper').removeClass('show-project');
+          scrollFunction.call();
           if (controller) {
             controller.destroy(true);
             controller = null;
@@ -161,13 +162,12 @@
 
           var wrapper$ = $('.page-card-grid .page-card-target.active');
           var grid$ = wrapper$.parents('.page-card-grid');
-          placeholder$.css('transitionDuration', 0);
+          placeholder$.css('transitionDuration', '0s');
           placeholder$.css(getFinalCardPosition(grid$, placeholder$));
-          placeholder$.css('transitionDuration', '');
           var content$ = wrapper$.find('.page-card-content').addBack('.page-card-content');
 
           setTimeout(function() {
-            $('html, body').scrollTop(mainScrollLocation);
+            placeholder$.css('transitionDuration', '');
             placeholder$.css(getInitialCardPosition(wrapper$, content$));
 
             placeholder$.removeClass('page-animate-in');
@@ -326,12 +326,60 @@
           $(window).scroll();
         }
 
+        function createPlaceholder(wrapper$) {
+          var content$ = wrapper$.find('.page-card-content').addBack('.page-card-content');
+          var clone$ = content$.clone();
+
+          var back$ = $(document.createElement('div'));
+          back$.addClass('back');
+          back$.html('&nbsp;');
+
+          var grid$ = wrapper$.parents('.page-card-grid');
+          var placeholder$ = $(document.createElement('div'));
+          placeholder$.addClass('placeholder');
+
+          placeholder$.append(clone$);
+          placeholder$.append(back$);
+
+          placeholder$.css(getInitialCardPosition(wrapper$, content$));
+
+          return placeholder$;
+        }
+
+        function maybeInitProjectPagePlaceholder() {
+          if ($('#main-page-content-wrapper.show-project').length == 0) {
+            return;
+          }
+
+          var path = location.pathname.slice(0, -1);
+          var wrapper$ = $('[data-page-path*="' + path + '"]');
+
+          if (wrapper$.length == 1) {
+            var placeholder$ = createPlaceholder(wrapper$);
+            placeholder$.addClass('page-animate-in');
+
+            var grid$ = wrapper$.parents('.page-card-grid');
+            wrapper$.addClass('active');
+            grid$.addClass('active');
+            grid$.append(placeholder$);
+
+            scrollFunction = function() {
+              var scrollElement = $('html, body');
+              // Try to roughly center it in the viewport.
+              scrollElement.scrollTop(wrapper$.offset().top - innerHeight / 2);
+            };
+          }
+        }
+
         function initMainPage() {
           window.history.replaceState({
             path: window.location.href,
             isRoot: true,
             scrollTop: 0
           }, "", window.location.href);
+
+          maybeInitProjectPagePlaceholder();
+
           // Begin MixItUp filtering for projects.
           var containerEl = document.querySelector('.portfolio-cards');
           var mixer = mixitup(containerEl, {
@@ -473,11 +521,12 @@
           function loadPage(wrapper$, pagePath) {
             var pageLoaded = false;
             var animationComplete = false;
-            var nextScrollLocation = mainScrollLocation;
+            var nextScrollFunction = scrollFunction;
+
             function loadMaybeComplete() {
               if(pageLoaded && animationComplete) {
                 update();
-                $('html, body').scrollTop(nextScrollLocation);
+                nextScrollFunction();
               }
             }
 
@@ -493,24 +542,13 @@
                   });
             }
 
-            var content$ = wrapper$.find('.page-card-content').addBack('.page-card-content');
-            var clone$ = content$.clone();
-
-            var back$ = $(document.createElement('div'));
-            back$.addClass('back');
-            back$.html('&nbsp;');
+            var placeholder$ = createPlaceholder(wrapper$);
 
             var grid$ = wrapper$.parents('.page-card-grid');
-            var placeholder$ = $(document.createElement('div'));
-            placeholder$.addClass('placeholder');
 
-            placeholder$.append(clone$);
-            placeholder$.append(back$);
             grid$.append(placeholder$);
             wrapper$.addClass('active');
             grid$.addClass('active');
-
-            placeholder$.css(getInitialCardPosition(wrapper$, content$));
 
             /*
              * Set the new final values after a delay. The delay makes sure the rendering was completed,
@@ -524,7 +562,8 @@
             function showPageContentFn(e) {
               if (e.target == e.currentTarget && e.originalEvent.propertyName == 'transform') {
                 placeholder$.off('transitionend', showPageContentFn);
-                mainScrollLocation = $('html, body').scrollTop();
+                var returnScrollTop = $('html, body').scrollTop();
+                scrollFunction = function() { $('html, body').scrollTop(returnScrollTop); };
                 $('#main-page-content-wrapper').addClass('show-project');
                 animationComplete = true;
                 loadMaybeComplete();
@@ -541,8 +580,8 @@
                 path: pagePath,
                 isRoot: false,
                 scrollTop: $('html, body').scrollTop()
-              }, "", pagePath)
-            mainScrollLocation = 0;
+              }, "", pagePath);
+            scrollFunction = function() { $('html, body').scrollTop(0); };
             loadPage(wrapper$, pagePath);
           });
 
@@ -555,7 +594,8 @@
               return;
             }
 
-            mainScrollLocation = state.scrollTop;
+            var returnScrollTop = state.scrollTop;
+            scrollFunction = function() { $('html, body').scrollTop(returnScrollTop); };
             if (!state.isRoot) {
               var wrapper$ = $('[data-page-path="' + state.path + '"]');
               loadPage(wrapper$, state.path);
