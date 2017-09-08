@@ -631,10 +631,17 @@
             }
           });
 
+          var scrollHistoryDebounceId;
           $(window).on('scroll', function() {
-            var currentState = history.state;
-            currentState.scrollTop = $('html, body').scrollTop();
-            history.replaceState(currentState, '', currentState.path);
+            if (scrollHistoryDebounceId) {
+              clearTimeout(scrollHistoryDebounceId);
+            }
+            scrollHistoryDebounceId = window.setTimeout(function() {
+              var currentState = history.state;
+              currentState.scrollTop = $(window).scrollTop();
+              history.replaceState(currentState, '', currentState.path);
+              scrollHistoryDebounceId = undefined;
+            }, 500);
           });
         } // End initMainPage.
         initMainPage();
