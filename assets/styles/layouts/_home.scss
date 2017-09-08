@@ -223,7 +223,9 @@
 }
 
 #main-page-content-wrapper.show-project {
-  display: none;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
 
   & + #project-page-content-wrapper {
     display: block;
