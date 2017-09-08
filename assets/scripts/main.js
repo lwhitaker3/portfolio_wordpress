@@ -18,7 +18,7 @@
     // All pages
     'common': {
       init: function() {
-        var scrollFunction = function() { $('html, body').scrollTop(0); };
+        var scrollFunction = function() { $(window).scrollTop(0); };
         // Begin hero scroll button.
         var controller = null;
 
@@ -259,7 +259,7 @@
             history.pushState({
               path: path,
               isRoot: true,
-              scrollTop: $('html, body').scrollTop()
+              scrollTop: $(window).scrollTop()
             }, "", path);
             closePage();
           });
@@ -564,8 +564,8 @@
             function showPageContentFn(e) {
               if (e.target == e.currentTarget && e.originalEvent.propertyName == 'transform') {
                 placeholder$.off('transitionend', showPageContentFn);
-                var returnScrollTop = $('html, body').scrollTop();
-                scrollFunction = function() { $('html, body').scrollTop(returnScrollTop); };
+                var returnScrollTop = $(window).scrollTop();
+                scrollFunction = function() { $(window).scrollTop(returnScrollTop); };
                 $('#main-page-content-wrapper').addClass('show-project');
                 animationComplete = true;
                 loadMaybeComplete();
@@ -581,9 +581,9 @@
             history.pushState({
                 path: pagePath,
                 isRoot: false,
-                scrollTop: $('html, body').scrollTop()
+                scrollTop: $(window).scrollTop()
               }, "", pagePath);
-            scrollFunction = function() { $('html, body').scrollTop(0); };
+            scrollFunction = function() { $(window).scrollTop(0); };
             loadPage(wrapper$, pagePath);
           });
 
@@ -597,7 +597,7 @@
             }
 
             var returnScrollTop = state.scrollTop;
-            scrollFunction = function() { $('html, body').scrollTop(returnScrollTop); };
+            scrollFunction = function() { $(window).scrollTop(returnScrollTop); };
             if (!state.isRoot) {
               var wrapper$ = $('[data-page-path="' + state.path + '"]');
               loadPage(wrapper$, state.path);
