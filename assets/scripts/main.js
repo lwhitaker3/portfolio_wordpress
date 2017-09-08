@@ -152,6 +152,8 @@
             controller = null;
           }
           $('#project-page-content').empty();
+          // Trigger page updates, now that it's visible again.
+          $(window).resize();
 
           var placeholder$ = $('.page-card-grid .placeholder');
 
