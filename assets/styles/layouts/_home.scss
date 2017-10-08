@@ -57,70 +57,80 @@
         .stroke{
           stroke-linecap: round;
           shape-rendering: geometricPrecision;
-          .louise{
-            stroke-dasharray: 2200;
-            stroke-dashoffset: 2200;
+          .louise, .r, .w, .hitaker, .t-cross {
             stroke-width: 8;
-            -webkit-animation: name-louise 1.5s linear forwards .5s;
-                    animation: name-louise 1.5s linear forwards .5s;
-          }
-          .r {
-            stroke-dasharray: 800;
-            stroke-dashoffset: 800;
-            stroke-width: 8;
-            -webkit-animation: name-r .5s linear forwards 2.25s;
-                    animation: name-r .5s linear forwards 2.25s;
-          }
-          .w {
-            stroke-dasharray: 800;
-            stroke-dashoffset: 800;
-            stroke-width: 8;
-            -webkit-animation: name-w .5s linear forwards 3s;
-                    animation: name-w .5s linear forwards 3s;
-          }
-          .hitaker {
-            stroke-dasharray: 2400;
-            stroke-dashoffset: 2400;
-            stroke-width: 8;
-            -webkit-animation: name-hitaker 1.5s linear forwards 3.75s;
-                    animation: name-hitaker 1.5s linear forwards 3.75s;
-          }
-          .t-cross {
-            stroke-dasharray: 200;
-            stroke-dashoffset: 200;
-            stroke-width: 8;
-            -webkit-animation: name-t-cross .5s linear forwards 5.5s;
-                    animation: name-t-cross .5s linear forwards 5.5s;
           }
         }
         .name-hearts{
           path{
-            stroke-dasharray: 100;
-            stroke-dashoffset: 100;
             stroke-width: 7;
             stroke-linecap: round;
-          }
-          .heart1-2{
-            -webkit-animation: name-hearts .25s linear forwards 6.25s;
-                    animation: name-hearts .25s linear forwards 6.25s;
-          }
-          .heart1-1{
-            -webkit-animation: name-hearts .25s linear forwards 6.75s;
-                    animation: name-hearts .25s linear forwards 6.75s;
-          }
-          .heart2-2{
-            -webkit-animation: name-hearts .25s linear forwards 7.25s;
-                    animation: name-hearts .25s linear forwards 7.25s;
-          }
-          .heart2-1{
-            -webkit-animation: name-hearts .25s linear forwards 7.75s;
-                    animation: name-hearts .25s linear forwards 7.75s;
           }
         }
       }
     }
   }
 }
+
+/* smil means it supports SVG animations. */
+.smil .jumbotron-wrapper .jumbotron #svgWrapper {
+  .stroke {
+    .louise{
+      stroke-dasharray: 2200;
+      stroke-dashoffset: 2200;
+      -webkit-animation: name-louise 1.5s linear forwards .5s;
+              animation: name-louise 1.5s linear forwards .5s;
+    }
+    .r {
+      stroke-dasharray: 800;
+      stroke-dashoffset: 800;
+      -webkit-animation: name-r .5s linear forwards 2.25s;
+              animation: name-r .5s linear forwards 2.25s;
+    }
+    .w {
+      stroke-dasharray: 800;
+      stroke-dashoffset: 800;
+      -webkit-animation: name-w .5s linear forwards 3s;
+              animation: name-w .5s linear forwards 3s;
+    }
+    .hitaker {
+      stroke-dasharray: 2400;
+      stroke-dashoffset: 2400;
+      -webkit-animation: name-hitaker 1.5s linear forwards 3.75s;
+              animation: name-hitaker 1.5s linear forwards 3.75s;
+    }
+    .t-cross {
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      -webkit-animation: name-t-cross .5s linear forwards 5.5s;
+              animation: name-t-cross .5s linear forwards 5.5s;
+    }
+  }
+
+  .name-hearts{
+    path{
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+    }
+    .heart1-2{
+      -webkit-animation: name-hearts .25s linear forwards 6.25s;
+              animation: name-hearts .25s linear forwards 6.25s;
+    }
+    .heart1-1{
+      -webkit-animation: name-hearts .25s linear forwards 6.75s;
+              animation: name-hearts .25s linear forwards 6.75s;
+    }
+    .heart2-2{
+      -webkit-animation: name-hearts .25s linear forwards 7.25s;
+              animation: name-hearts .25s linear forwards 7.25s;
+    }
+    .heart2-1{
+      -webkit-animation: name-hearts .25s linear forwards 7.75s;
+              animation: name-hearts .25s linear forwards 7.75s;
+    }
+  }
+}
+
 .controls{
   margin-bottom: 30px;
   font-size: 1.25rem;

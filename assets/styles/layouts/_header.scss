@@ -114,23 +114,7 @@
     }
     svg:hover{
       .stroke .louise {
-        stroke-dasharray: 600;
-        stroke-dashoffset: 600;
         stroke-width: 2.5;
-        -webkit-animation: logo-louise 1s linear forwards .5s;
-                animation: logo-louise 1s linear forwards .5s;
-      }
-      .name-hearts path{
-        stroke-dasharray: 50;
-        stroke-dashoffset: 50;
-      }
-      .name-hearts .heart1-2{
-        -webkit-animation: logo-hearts 1s linear forwards 1.5s;
-                animation: logo-hearts 1s linear forwards 1.5s;
-      }
-      .name-hearts .heart1-1{
-        -webkit-animation: logo-hearts 1s linear forwards 2s;
-                animation: logo-hearts 1s linear forwards 2s;
       }
     }
   }
@@ -143,5 +127,28 @@
   }
   &.slideUp {
     transform: translateY(-100%);
+  }
+}
+
+/* smil means it supports SVG animations. */
+.smil .navbar .logo-wrapper svg:hover {
+  .stroke .louise {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    -webkit-animation: logo-louise 1s linear forwards .5s;
+    animation: logo-louise 1s linear forwards .5s;
+  }
+  
+  .name-hearts path{
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+  }
+  .name-hearts .heart1-2{
+    -webkit-animation: logo-hearts 1s linear forwards 1.5s;
+            animation: logo-hearts 1s linear forwards 1.5s;
+  }
+  .name-hearts .heart1-1{
+    -webkit-animation: logo-hearts 1s linear forwards 2s;
+            animation: logo-hearts 1s linear forwards 2s;
   }
 }
