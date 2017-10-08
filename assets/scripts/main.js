@@ -137,8 +137,8 @@
           var gridOffset = grid$.offset();
           return {
             /* Offsets from the relative parent to set it at the upper left corner. */
-            top: -(gridOffset.top - scrollY),
-            left: -(gridOffset.left - scrollX),
+            top: -(gridOffset.top - pageYOffset),
+            left: -(gridOffset.left - pageXOffset),
             height: document.documentElement.clientHeight,
             width: document.documentElement.clientWidth
           };
