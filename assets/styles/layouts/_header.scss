@@ -133,14 +133,14 @@
 /* smil means it supports SVG animations. */
 .smil .navbar .logo-wrapper svg:hover {
   .stroke .louise {
-    stroke-dasharray: 600;
+    stroke-dasharray: 590;
     stroke-dashoffset: 600;
     -webkit-animation: logo-louise 1s linear forwards .5s;
     animation: logo-louise 1s linear forwards .5s;
   }
   
   .name-hearts path{
-    stroke-dasharray: 50;
+    stroke-dasharray: 40;
     stroke-dashoffset: 50;
   }
   .name-hearts .heart1-2{
